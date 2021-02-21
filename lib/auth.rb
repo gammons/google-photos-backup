@@ -3,6 +3,8 @@ require "dotenv"
 require "faraday"
 require "sinatra"
 
+require_relative "./token_handler"
+
 Dotenv.load
 
 get "/" do
@@ -24,18 +26,8 @@ get "/" do
 end
 
 get "/callback" do
-  query = {
-    code: params[:code],
-    redirect_uri: "http://localhost:4567/callback",
-    client_id: ENV["GOOGLE_CLIENT_ID"],
-    client_secret: ENV["GOOGLE_CLIENT_SECRET"],
-    scope: "",
-    grant_type: "authorization_code"
-  }
-
-  resp = Faraday.post("https://oauth2.googleapis.com/token", query)
-  f = File.open("creds.json", "w")
-  f << JSON.parse(resp.body)
+  token = TokenHandler.new.exchange_code_for_token(params[:code])
+  token.write_creds!
 
   if response.status == 200
     "All set!"

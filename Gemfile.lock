@@ -46,13 +46,14 @@ GEM
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
+    rake (13.0.3)
     ruby2_keywords (0.0.4)
     sinatra (2.1.0)
       mustermann (~> 1.0)
       rack (~> 2.2)
       rack-protection (= 2.1.0)
       tilt (~> 2.0)
-    sqlite (1.0.2)
+    sqlite3 (1.4.2)
     tilt (2.0.10)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -67,8 +68,10 @@ DEPENDENCIES
   byebug
   dotenv
   faraday
+  minitest
+  rake
   sinatra
-  sqlite
+  sqlite3
 
 BUNDLED WITH
    2.1.4

@@ -10,9 +10,9 @@ gem "aws-sdk-s3"
 gem "dotenv"
 gem "faraday"
 gem "sinatra"
-gem "sqlite"
+gem "sqlite3"
 
 # Development stuff
 gem "byebug"
-
-
+gem "minitest"
+gem "rake"
