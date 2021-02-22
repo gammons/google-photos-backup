@@ -1,5 +1,6 @@
 .byebug_history
 .env
 creds.json
+creds_production.json
 photos.db
 google-photos

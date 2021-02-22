@@ -1,6 +1,3 @@
-require "faraday"
-require "byebug"
-
 require_relative "./../models/media_item"
 
 module GooglePhotos
@@ -23,11 +20,12 @@ module GooglePhotos
 
       res["mediaItems"].each do |item|
         mi = MediaItem.new
-        mi.id = item["id"]
+        mi.photo_id = item["id"]
         mi.url = item["baseUrl"]
         mi.mime_type = item["mimeType"]
         mi.width = item["mediaMetadata"]["width"]
         mi.height = item["mediaMetadata"]["height"]
+        mi.created_at = item["mediaMetadata"]["creationTime"]
         items << mi
       end
 

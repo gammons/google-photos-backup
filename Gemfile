@@ -9,6 +9,7 @@ gem "activerecord"
 gem "aws-sdk-s3"
 gem "dotenv"
 gem "faraday"
+gem "faraday_middleware"
 gem "sinatra"
 gem "sqlite3"
 

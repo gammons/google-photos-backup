@@ -36,6 +36,8 @@ GEM
       multipart-post (>= 1.2, < 3)
       ruby2_keywords
     faraday-net_http (1.0.1)
+    faraday_middleware (1.0.0)
+      faraday (~> 1.0)
     i18n (1.8.8)
       concurrent-ruby (~> 1.0)
     jmespath (1.4.0)
@@ -68,6 +70,7 @@ DEPENDENCIES
   byebug
   dotenv
   faraday
+  faraday_middleware
   minitest
   rake
   sinatra
