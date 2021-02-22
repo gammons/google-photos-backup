@@ -42,7 +42,7 @@ class S3Handler
       body: media_item.data,
       bucket: ENV["S3_BUCKET"],
       key: media_item.file_name,
-      storage_class: "GLACIER",
+      # storage_class: "GLACIER",
       metadata: {
         photo_id: media_item.photo_id,
         url: media_item.url,
@@ -70,21 +70,19 @@ class MediaBackupProcessor
       logger.info("Processing next page")
       photos = api.get_media_items(token, api.next_page_token)
 
-      photos.each do |item|
-        logger.info("Processing item #{item}")
-        next if MediaItem.exists?(photo_id: item.photo_id) && ENV["OVERWRITE"].blank?
+      threads = photos.map do |item|
+        Thread.new do
+          logger.info("Processing item #{item}")
+          next if MediaItem.exists?(photo_id: item.photo_id) && ENV["OVERWRITE"].blank?
 
-        item.save
-        handler.process(item)
+          item.save
+          handler.process(item)
+        end
       end
+      threads.each(&:join)
+
       break if api.next_page_token.nil?
     end
-  end
-
-  def s3_test
-    s3 = Aws::S3::Client.new
-    resp = s3.list_buckets
-    puts resp
   end
 
   private
