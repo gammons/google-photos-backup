@@ -64,24 +64,29 @@ class MediaBackupProcessor
     logger.info("Beginning to get media items")
     api = GooglePhotos::Api.new
 
-    MediaItem.destroy_all
-
     loop do
       logger.info("Processing next page")
       photos = api.get_media_items(token, api.next_page_token)
 
+      done = false
       threads = photos.map do |item|
-        Thread.new do
-          logger.info("Processing item #{item}")
-          next if MediaItem.exists?(photo_id: item.photo_id) && ENV["OVERWRITE"].blank?
-
-          item.save
-          handler.process(item)
+        logger.info("Processing item #{item}")
+        if MediaItem.exists?(photo_id: item.photo_id)
+          if ENV["OVERWRITE"].blank?
+            logger.info("This file was seen before.  Stopping execution.")
+            done = true
+          end
+          nil
+        else
+          Thread.new do
+            item.save
+            handler.process(item)
+          end
         end
       end
-      threads.each(&:join)
+      threads.compact.each(&:join)
 
-      break if api.next_page_token.nil?
+      break if api.next_page_token.nil? || done
     end
   end
 
