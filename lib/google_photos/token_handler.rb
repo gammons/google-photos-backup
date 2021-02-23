@@ -1,7 +1,3 @@
-require "faraday"
-
-require_relative "../models/token"
-
 module GooglePhotos
   class TokenHandler
     def exchange_code_for_token(code)

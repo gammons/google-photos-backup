@@ -1,6 +1,3 @@
-require "json"
-require "time"
-
 class Token
   attr_accessor :access_token, :refresh_token, :expiry
 

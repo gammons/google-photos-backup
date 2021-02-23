@@ -1,11 +1,7 @@
 require "dotenv"
 require "rake/testtask"
 
-require_relative "./lib/models/token"
-require_relative "./lib/google_photos/token_handler"
-
-require_relative "./lib/media_backup_processor"
-require_relative "./lib/db/db"
+require_relative "./google_photos_backup"
 
 Dotenv.load
 
@@ -13,7 +9,7 @@ ENV["CONTEXT"] = "production"
 
 desc "Runs the authorization process with google photos"
 task :auth do
-  `ruby lib/auth.rb`
+  `ruby auth.rb`
 end
 
 task :process do

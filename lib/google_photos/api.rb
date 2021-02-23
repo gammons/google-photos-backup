@@ -1,5 +1,3 @@
-require_relative "./../models/media_item"
-
 module GooglePhotos
   class Api
     def get_media_items(token, page_token = nil)
