@@ -12,6 +12,7 @@ task :auth do
   `ruby auth.rb`
 end
 
+desc "Run the main processing task."
 task :process do
   MediaBackupProcessor.new.execute!
 end

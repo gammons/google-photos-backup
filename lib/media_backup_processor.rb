@@ -9,8 +9,6 @@ class MediaBackupProcessor
     logger.info("Beginning to get media items")
     api = GooglePhotos::Api.new
 
-    MediaItem.destroy_all
-
     loop do
       logger.info("Processing next page")
       photos = api.get_media_items(token, api.next_page_token)
