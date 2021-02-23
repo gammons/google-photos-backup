@@ -16,16 +16,8 @@ task :auth do
   `ruby lib/auth.rb`
 end
 
-desc "refresh the access token."
-task :refresh_access_token do
-  token = Token.load_creds
-  token = GooglePhotos::TokenHandler.new.refresh_access_token(token)
-  token.write_creds!
-end
-
 task :process do
   MediaBackupProcessor.new.execute!
-  # PhotoProcessor.new.s3_test
 end
 
 desc "Sets up a new DB"
