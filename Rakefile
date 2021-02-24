@@ -12,20 +12,12 @@ task :auth do
   `ruby auth.rb`
 end
 
-task :prom_test do
-  @prometheus = Prometheus::Client.registry
-  # @counter = @prometheus.counter(:photo_test, docstring: "A counter of Google photos media items processed.")
-  @counter = Prometheus::Client::Counter.new(:photo_test, docstring: 'A counter of HTTP requests made')
-  puts "current counter: #{@counter.get}"
-  @counter.increment(by: rand(10))
-  r = Prometheus::Client::Push.new("push-photos", nil, "http://admin:admin@localhost:9091").add(@prometheus)
-  puts r
-  sleep 0
-end
-
 desc "Run the main processing task."
 task :process do
-  MediaBackupProcessor.new.execute!
+  handler = NullHandler
+  handler = S3Handler if ENV["HANDLER"] == "S3"
+  handler = FileHandler if ENV["HANDLER"] == "file"
+  MediaBackupProcessor.new.execute!(handler)
 end
 
 desc "Sets up a new DB"
