@@ -5,6 +5,7 @@ require "faraday_middleware"
 require "json"
 require "logger"
 require "prometheus/client"
+require "prometheus/client/push"
 require "sqlite3"
 require "time"
 

@@ -3,6 +3,8 @@ class MediaBackupProcessor
 
   def initialize
     @logger = Logger.new(STDOUT)
+    @prometheus = Prometheus::Client.registry
+    @counter = @prometheus.counter(:photos_processed, docstring: "A counter of Google photos media items processed.")
   end
 
   def execute!(handler = NullHandler.new)
@@ -23,6 +25,7 @@ class MediaBackupProcessor
           end
           nil
         else
+          @counter.increment
           Thread.new do
             item.save
             handler.process(item)
@@ -30,6 +33,7 @@ class MediaBackupProcessor
         end
       end
       threads.compact.each(&:join)
+      Prometheus::Client::Push.new("push-photos", nil, ENV["PUSHGATEWAY_URL"]).add(@prometheus)
 
       break if api.next_page_token.nil? || done
     end
