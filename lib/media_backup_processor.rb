@@ -9,7 +9,6 @@ class MediaBackupProcessor
 
   def execute!(handler_class)
     handler = handler_class.new
-    puts "handler = ", handler
     logger.info("Beginning to get media items")
     api = GooglePhotos::Api.new
 
@@ -28,25 +27,32 @@ class MediaBackupProcessor
   private
 
   def process_photos_page(photos, handler)
-    mutex = Mutex.new
     threads = photos.map do |item|
       logger.info("Processing item #{item}")
-      if MediaItem.exists?(photo_id: item.photo_id)
-        if ENV["OVERWRITE"].blank?
-          logger.info("This file was seen before.  Stopping execution.")
-          @done = true
-        end
-        nil
-      else
-        Thread.new do
-          mutex.synchronize { item.save }
-          handler.process(item)
-          @metrics.count_success
-        end
+      process_photo(handler, item)
+    end
+
+    threads.compact.each(&:join)
+
+    @metrics.sync
+  end
+
+  def process_photo(handler, item)
+    mutex = Mutex.new
+
+    if MediaItem.exists?(photo_id: item.photo_id)
+      if ENV["OVERWRITE"].blank?
+        logger.info("This file was seen before.  Stopping execution.")
+        @done = true
+      end
+      nil
+    else
+      Thread.new do
+        mutex.synchronize { item.save }
+        handler.process(item)
+        @metrics.count_success
       end
     end
-    threads.compact.each(&:join)
-    @metrics.sync
   end
 
   def token
