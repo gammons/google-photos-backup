@@ -14,7 +14,11 @@ class Metrics
   end
 
   def sync
+    return if ENV["PUSHGATEWAY_URL"].blank?
+
     r = Prometheus::Client::Push.new("push-photos", nil, ENV["PUSHGATEWAY_URL"]).add(@prometheus)
-    puts r
+    if r.code != "200"
+      raise("Issue connecting with metrics agent: #{r.body}")
+    end
   end
 end
