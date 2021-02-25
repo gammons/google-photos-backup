@@ -1,11 +1,17 @@
-require "byebug"
-require "dotenv"
-require "faraday"
 require "sinatra"
 
 require "./google_photos_backup"
 
 Dotenv.load
+
+link = "http://localhost:4567"
+if RbConfig::CONFIG["host_os"] =~ /mswin|mingw|cygwin/
+  system "start #{link}"
+elsif RbConfig::CONFIG["host_os"] =~ /darwin/
+  system "open #{link}"
+elsif RbConfig::CONFIG["host_os"] =~ /linux|bsd/
+  system "xdg-open #{link}"
+end
 
 get "/" do
   query = {
@@ -26,10 +32,10 @@ get "/" do
 end
 
 get "/callback" do
-  token = TokenHandler.new.exchange_code_for_token(params[:code])
-  token.write_creds!
+  token = GooglePhotos::TokenHandler.new.exchange_code_for_token(params[:code])
 
   if response.status == 200
+    token.write_creds!
     "All set!"
   else
     "Something went wrong... #{response.body}"
