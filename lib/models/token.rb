@@ -2,13 +2,10 @@ class Token
   attr_accessor :access_token, :refresh_token, :expiry
 
   def self.load_creds
-    json = JSON.parse(File.read("creds_#{ENV['CONTEXT']}.json"))
-    new(access_token: json["access_token"],
-        refresh_token: json["refresh_token"],
-        expiry: json["expiry"])
+    new(refresh_token: ENV["REFRESH_TOKEN"])
   end
 
-  def initialize(access_token:, refresh_token:, expiry:)
+  def initialize(access_token: nil, refresh_token:, expiry: nil)
     @access_token = access_token
     @refresh_token = refresh_token
 
@@ -17,14 +14,12 @@ class Token
   end
 
   def expired?
-    expiry < Time.now
+    (expiry && (expiry < Time.now)) || access_token.nil?
   end
 
   def write_creds!
-    h = { access_token: access_token, refresh_token: refresh_token, expiry: expiry }
-    json = JSON.generate(h)
-    f = File.open("creds_#{ENV['CONTEXT']}.json", "w")
-    f << json
+    f = File.open("refresh_token.txt", "w")
+    f << refresh_token
     f.close
   end
 end
