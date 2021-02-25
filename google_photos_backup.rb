@@ -1,5 +1,6 @@
 require "active_record"
 require "aws-sdk-s3"
+require "dotenv"
 require "faraday"
 require "faraday_middleware"
 require "json"

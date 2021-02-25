@@ -1,7 +1,6 @@
-require "dotenv"
 require "rake/testtask"
 
-require_relative "./google_photos_backup"
+require "./google_photos_backup"
 
 Dotenv.load
 
