@@ -41,11 +41,16 @@ GEM
     i18n (1.8.8)
       concurrent-ruby (~> 1.0)
     jmespath (1.4.0)
+    mini_portile2 (2.5.0)
     minitest (5.14.3)
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
+    nokogiri (1.11.1)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     prometheus-client (2.1.0)
+    racc (1.5.2)
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
@@ -73,6 +78,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   minitest
+  nokogiri
   prometheus-client
   rake
   sinatra

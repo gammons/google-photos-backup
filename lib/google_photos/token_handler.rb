@@ -1,5 +1,9 @@
 module GooglePhotos
   class TokenHandler
+    def initialize
+      @logger = Logger.new(STDOUT)
+    end
+
     def exchange_code_for_token(code)
       query = {
         code: code,
@@ -31,6 +35,8 @@ module GooglePhotos
     private
 
     def make_request(query)
+      @logger.info("posting, query is #{query.inspect}")
+
       resp = Faraday.post("https://oauth2.googleapis.com/token", query)
       if resp.status != 200
         puts resp.body
