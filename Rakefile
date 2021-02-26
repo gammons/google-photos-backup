@@ -17,6 +17,7 @@ task :process do
   handler = S3Handler if ENV["HANDLER"] == "S3"
   handler = FileHandler if ENV["HANDLER"] == "file"
   MediaBackupProcessor.new.execute!(handler)
+  sleep 3600
 end
 
 desc "Sets up a new DB"
