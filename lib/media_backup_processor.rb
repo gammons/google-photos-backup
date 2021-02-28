@@ -22,6 +22,9 @@ class MediaBackupProcessor
       break if api.next_page_token.nil? || @done
     end
 
+    logger.info("api.next_page_token is nil") if api.next_page_token.nil?
+    logger.info("Got done token") if @done
+
     @metrics.log_successful_run
   end
 
