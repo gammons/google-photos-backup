@@ -57,5 +57,4 @@ spec:
               secretKeyRef:
                 name: gpb
                 key: aws-secret-access-key
-        #command: ["sleep","3600"]
         command: ["bundle","exec","rake","process"]
