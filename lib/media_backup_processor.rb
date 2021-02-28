@@ -39,7 +39,6 @@ class MediaBackupProcessor
   end
 
   def process_photo(handler, item)
-
     if MediaItem.exists?(photo_id: item.photo_id)
       if ENV["OVERWRITE"].blank?
         logger.info("This file was seen before.  Stopping execution.")
