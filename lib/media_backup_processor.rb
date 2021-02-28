@@ -5,6 +5,7 @@ class MediaBackupProcessor
     @logger = Logger.new(STDOUT)
     @metrics = Metrics.new
     @done = false
+    @mutex = Mutex.new
   end
 
   def execute!(handler_class)
@@ -38,7 +39,6 @@ class MediaBackupProcessor
   end
 
   def process_photo(handler, item)
-    mutex = Mutex.new
 
     if MediaItem.exists?(photo_id: item.photo_id)
       if ENV["OVERWRITE"].blank?
@@ -48,7 +48,7 @@ class MediaBackupProcessor
       nil
     else
       Thread.new do
-        mutex.synchronize { item.save }
+        @mutex.synchronize { item.save }
         handler.process(item)
         @metrics.count_success
       end
