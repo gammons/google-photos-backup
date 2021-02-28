@@ -21,7 +21,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: PUSHGATEWAY_URL
-            value: "http://prometheus-pushgateway.default.svc.cluster.local:9091"
+            value: "http://prometheus-pushgateway.prometheus.svc.cluster.local:9091"
 
           - name: HANDLER
             value: "S3"
@@ -57,5 +57,5 @@ spec:
               secretKeyRef:
                 name: gpb
                 key: aws-secret-access-key
-        # command: ["sleep","3600"]
+        #command: ["sleep","3600"]
         command: ["bundle","exec","rake","process"]

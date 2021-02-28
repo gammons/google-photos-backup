@@ -24,7 +24,7 @@ spec:
             imagePullPolicy: Always
             env:
               - name: PUSHGATEWAY_URL
-                value: "http://prometheus-pushgateway.default.svc.cluster.local:9091"
+                value: "http://prometheus-pushgateway.prometheus.svc.cluster.local:9091"
 
               - name: HANDLER
                 value: "S3"
