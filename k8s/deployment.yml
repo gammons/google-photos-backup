@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: google-photos-backupper
+  namespace: google-photos-backup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gpb
+  template:
+    metadata:
+      labels:
+        app: gpb
+    spec:
+      volumes:
+      - name: photostore
+        persistentVolumeClaim:
+          claimName: google-photos-backup-db-store
+      containers:
+      - name: google-photos-backup
+        image: gammons1/google_photos_backup:latest
+        volumeMounts:
+        - name: photostore
+          mountPath: "/app/db/"
+        imagePullPolicy: Always
+        env:
+          - name: PUSHGATEWAY_URL
+            value: "http://prometheus-pushgateway.default.svc.cluster.local:9091"
+
+          - name: HANDLER
+            value: "S3"
+
+          - name: GOOGLE_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: gpb
+                key: google-client-id
+          - name: GOOGLE_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: gpb
+                key: google-client-secret
+
+          - name: REFRESH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: gpb
+                key: refresh-token
+
+          - name: AWS_REGION
+            value: "us-east-2"
+          - name: S3_BUCKET
+            value: "gammons-google-photos-archive"
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: gpb
+                key: aws-access-key-id
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: gpb
+                key: aws-secret-access-key
+        command: ["sleep","3600"]
